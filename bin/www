@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+var debug = require('debug')('chathub-server');
+var app = require('../app');
+var http = require('http').Server(app);
+//var io = require('socket.io')(http);
+//var io = require('../sockets')
+
+app.set('port', process.env.PORT || 3000);
+
+var server = http.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+
+/* Load Sockets module */
+var listen = require('../sockets').listen(http);
+
+//io.on('connection', function(socket){
+//    console.log('a user connected');
+//
+//    socket.on('disconnect', function(){
+//        console.log('user disconnected');
+//    });
+//
+//    socket.on('chat message', function(msg){
+//        console.log('message: ' + msg);
+//    });
+//});
+
