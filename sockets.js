@@ -24,13 +24,18 @@ module.exports.listen = function(app){
 
         socket.on('room', function(room) {
             socket.join(room);
+
+            var msg = "Someone has entered the room.";
+            io.sockets.in(room).emit('user connected', msg);
+
             console.log('a user connected to room ' + room);
         });
 
-        socket.on('message', function(room, msg){
+        socket.on('message', function(room, msg, profile){
 //            io.emit('message', msg);
-            io.sockets.in(room).emit('message', msg);
+            io.sockets.in(room).emit('message', msg, profile);
             console.log('message: ' + msg);
+            console.log(profile);
         });
 
     });
