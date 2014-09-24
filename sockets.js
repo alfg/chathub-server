@@ -14,21 +14,22 @@ module.exports.listen = function(app){
         console.log('a user connected');
 
         socket.on('disconnect', function(){
-          console.log('user disconnected');
+          console.log('a user disconnected');
         });
 
-//        socket.on('chat message', function(msg){
-//          io.emit('chat message', msg);
-//          console.log('message: ' + msg);
-//        });
-
-        socket.on('room', function(room) {
+        socket.on('room', function(room, profile) {
             socket.join(room);
 
-            var msg = "Someone has entered the room.";
+            var msg = profile + " has entered the room.";
             io.sockets.in(room).emit('user connected', msg);
 
             console.log('a user connected to room ' + room);
+
+            socket.on('disconnect', function(){
+                var msg = profile + " has left the room.";
+                io.sockets.in(room).emit('user disconnected', msg);
+                console.log(profile + ' disconnected');
+            });
         });
 
         socket.on('message', function(room, msg, profile){
