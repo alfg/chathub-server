@@ -19,16 +19,41 @@ module.exports.listen = function(app){
 
         socket.on('room', function(room, profile) {
             socket.join(room);
+            socket.nickname = profile ? profile.login : "Anonymous";
+            socket.thumbnail =  profile ? profile.thumbnail : "https://avatars0.githubusercontent.com/u/1746301";
+            socket.html_url = profile ? profile.html_url : "#";
 
-            var msg = profile + " has entered the room.";
-            io.sockets.in(room).emit('user connected', msg);
+
+
+            // Build users
+            var users = [];
+            var clients = io.sockets.adapter.rooms[room];
+            for (var id in clients) {
+                var obj = {};
+                obj["nickname"] = io.sockets.adapter.nsp.connected[id].nickname;
+                obj["thumbnail"] = io.sockets.adapter.nsp.connected[id].thumbnail;
+                obj["html_url"] = io.sockets.adapter.nsp.connected[id].html_url;
+                users.push(obj);
+                console.log(io.sockets.adapter.nsp.connected[id].nickname);
+            }
+
+            var msg = socket.nickname + " has entered the room.";
+            io.sockets.in(room).emit('user connected', msg, users);
 
             console.log('a user connected to room ' + room);
 
             socket.on('disconnect', function(){
-                var msg = profile + " has left the room.";
-                io.sockets.in(room).emit('user disconnected', msg);
-                console.log(profile + ' disconnected');
+                // Build users
+                var users = [];
+                var clients = io.sockets.adapter.rooms[room];
+                for (var id in clients) {
+                    users.push(io.sockets.adapter.nsp.connected[id]);
+                    console.log(io.sockets.adapter.nsp.connected[id].nickname);
+                }
+
+                var msg = socket.nickname + " has left the room.";
+                io.sockets.in(room).emit('user disconnected', msg, users);
+                console.log(socket.nickname + ' disconnected');
             });
         });
 
