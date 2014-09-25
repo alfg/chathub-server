@@ -47,7 +47,11 @@ module.exports.listen = function(app){
                 var users = [];
                 var clients = io.sockets.adapter.rooms[room];
                 for (var id in clients) {
-                    users.push(io.sockets.adapter.nsp.connected[id]);
+                    var obj = {};
+                    obj["nickname"] = io.sockets.adapter.nsp.connected[id].nickname;
+                    obj["thumbnail"] = io.sockets.adapter.nsp.connected[id].thumbnail;
+                    obj["html_url"] = io.sockets.adapter.nsp.connected[id].html_url;
+                    users.push(obj);
                     console.log(io.sockets.adapter.nsp.connected[id].nickname);
                 }
 
