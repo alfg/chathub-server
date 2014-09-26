@@ -12,7 +12,7 @@ module.exports.listen = function(app){
 
         socket.on('room', function(room, profile) {
             socket.join(room);
-            socket.nickname = profile ? profile.login : "Anonymous";
+            socket.nickname = profile ? profile.login : "Guest";
             socket.thumbnail =  profile ? profile.thumbnail : "https://avatars0.githubusercontent.com/u/1746301";
             socket.html_url = profile ? profile.html_url : "#";
 
@@ -28,7 +28,8 @@ module.exports.listen = function(app){
             }
 
             var msg = socket.nickname + " has entered the room.";
-            socket.broadcast.in(room).emit('user connected', msg, users);
+//            socket.broadcast.in(room).emit('user connected', msg, users);
+            io.in(room).emit('user connected', msg, users);
 
             console.log('a user connected to room ' + room);
 
