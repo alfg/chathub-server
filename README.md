@@ -1,7 +1,7 @@
 # chathub-server
-==============
+###### Chatrooms for Github. Express/Socket.io server.
 
-Chatrooms for Github. Express/Socket.io server.
+
 
 ChatHub is a simple chatroom application for your Github projects.
 
