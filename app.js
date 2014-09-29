@@ -2,8 +2,6 @@ var express = require('express');
 var oauthshim = require('oauth-shim')
 var path = require('path');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
 
 var config = require('./config');
 
@@ -11,14 +9,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hjs');
-
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 // OAuth Shim
 oauthshim.init({
