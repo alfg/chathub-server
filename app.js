@@ -1,4 +1,5 @@
 var express = require('express');
+var oauthshim = require('oauth-shim')
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -7,6 +8,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var config = require('./config');
 
 var app = express();
 var http = require('http').Server(app);
@@ -28,6 +30,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
+// OAuth Shim
+oauthshim.init({
+	// OAuth 2
+	'client_id' : config.GITHUB_ID,
+    'client_secret' : config.GITHUB_SECRET
+
+});
+app.all('/proxy', oauthshim.request);
+
+// Print request->response to console.
+oauthshim.debug = true;
+
+oauthshim.getCredentials = function(id,callback){
+    callback(config.GITHUB_SECRET);
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -35,6 +52,7 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
 
 // error handlers
 
